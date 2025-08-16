@@ -461,13 +461,14 @@ export default function Checkout() {
   }, [error, toast]);
 
   // Calculate total
-  const totalAmount = cartItems ? cartItems.reduce((total: number, item: any) => {
+  const cartData = (cartItems as any[]) || [];
+  const totalAmount = cartData.reduce((total: number, item: any) => {
     return total + (parseFloat(item.product.price) * item.quantity);
-  }, 0) : 0;
+  }, 0);
 
   // Create payment intent for card payments
   useEffect(() => {
-    if (cartItems && cartItems.length > 0) {
+    if (cartData.length > 0) {
       apiRequest("POST", "/api/create-payment-intent", { 
         amount: totalAmount 
       })
@@ -479,7 +480,7 @@ export default function Checkout() {
           console.error("Error creating payment intent:", error);
         });
     }
-  }, [cartItems, totalAmount]);
+  }, [cartData, totalAmount]);
 
   const handleOrderSuccess = () => {
     toast({
@@ -503,7 +504,7 @@ export default function Checkout() {
     );
   }
 
-  if (!cartItems || cartItems.length === 0) {
+  if (!cartData.length) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -548,7 +549,7 @@ export default function Checkout() {
 
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <CheckoutForm 
-            cartItems={cartItems}
+            cartItems={cartData}
             totalAmount={totalAmount}
             onOrderSuccess={handleOrderSuccess}
           />

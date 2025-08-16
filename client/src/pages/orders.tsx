@@ -243,7 +243,7 @@ export default function Orders() {
           <p className="text-gray-600">Track and manage your orders</p>
         </div>
 
-        {!orders || orders.length === 0 ? (
+        {!(orders as any[])?.length ? (
           <div className="text-center py-16">
             <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No Orders Yet</h3>
@@ -256,7 +256,7 @@ export default function Orders() {
           </div>
         ) : (
           <div className="space-y-6">
-            {orders.map((order: any) => (
+            {(orders as any[])?.map((order: any) => (
               <Card key={order.id} data-testid={`card-order-${order.orderNumber}`}>
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">

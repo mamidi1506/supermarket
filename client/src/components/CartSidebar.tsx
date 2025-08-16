@@ -30,6 +30,8 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
     retry: false,
   });
 
+  const items = (cartItems as any[]) || [];
+
   // Update cart item quantity
   const updateQuantityMutation = useMutation({
     mutationFn: async ({ id, quantity }: { id: string; quantity: number }) => {
@@ -150,15 +152,15 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   };
 
   const calculateSubtotal = () => {
-    if (!cartItems) return 0;
-    return cartItems.reduce((total: number, item: any) => {
+    if (!items.length) return 0;
+    return items.reduce((total: number, item: any) => {
       return total + (parseFloat(item.product.price) * item.quantity);
     }, 0);
   };
 
   const subtotal = calculateSubtotal();
   const total = subtotal - discountAmount;
-  const itemCount = cartItems ? cartItems.length : 0;
+  const itemCount = items.length;
 
   const handleCheckout = () => {
     onClose();
@@ -202,7 +204,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                     </div>
                   ))}
                 </div>
-              ) : !cartItems || cartItems.length === 0 ? (
+              ) : !items.length ? (
                 <div className="text-center py-12">
                   <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-500 mb-4">Your cart is empty</p>
@@ -212,7 +214,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {cartItems.map((item: any) => (
+                  {items.map((item: any) => (
                     <div key={item.id} className="flex items-center space-x-3 py-4 border-b last:border-b-0">
                       {/* Product Image */}
                       <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -288,7 +290,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
           </ScrollArea>
 
           {/* Cart Footer */}
-          {cartItems && cartItems.length > 0 && (
+          {items.length > 0 && (
             <div className="p-6 border-t bg-gray-50">
               {/* Coupon Code */}
               <div className="mb-4">

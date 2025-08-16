@@ -39,9 +39,10 @@ export default function Home() {
   });
 
   // Calculate total for checkout
-  const totalAmount = cartItems ? cartItems.reduce((total: number, item: any) => {
+  const cartData = (cartItems as any[]) || [];
+  const totalAmount = cartData.reduce((total: number, item: any) => {
     return total + (parseFloat(item.product.price) * item.quantity);
-  }, 0) : 0;
+  }, 0);
 
   // Handle unauthorized errors
   useEffect(() => {
@@ -133,9 +134,9 @@ export default function Home() {
                 </Card>
               ))}
             </div>
-          ) : categories && categories.length > 0 ? (
+          ) : (categories as any[])?.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-              {categories.slice(0, 5).map((category: any) => (
+              {(categories as any[]).slice(0, 5).map((category: any) => (
                 <Link key={category.id} href={`/category/${category.slug}`}>
                   <Card 
                     className="p-6 hover:shadow-md transition-shadow cursor-pointer border hover:border-primary-200"
@@ -196,9 +197,9 @@ export default function Home() {
                 </Card>
               ))}
             </div>
-          ) : products && products.length > 0 ? (
+          ) : (products as any[])?.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {products.slice(0, 10).map((product: any) => (
+              {(products as any[]).slice(0, 10).map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -253,7 +254,7 @@ export default function Home() {
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
-        cartItems={cartItems || []}
+        cartItems={cartData}
         totalAmount={totalAmount}
       />
       

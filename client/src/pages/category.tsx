@@ -107,11 +107,11 @@ export default function Category() {
         ) : category ? (
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2" data-testid={`text-category-name`}>
-              {category.name}
+              {(category as any)?.name}
             </h1>
-            {category.description && (
+            {(category as any)?.description && (
               <p className="text-gray-600" data-testid="text-category-description">
-                {category.description}
+                {(category as any)?.description}
               </p>
             )}
           </div>
@@ -129,15 +129,15 @@ export default function Category() {
               </Card>
             ))}
           </div>
-        ) : products && products.length > 0 ? (
+        ) : (products as any[])?.length > 0 ? (
           <div>
             <div className="flex items-center justify-between mb-6">
               <p className="text-gray-600" data-testid="text-products-count">
-                {products.length} products found
+                {(products as any[])?.length || 0} products found
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {products.map((product: any) => (
+              {(products as any[])?.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
