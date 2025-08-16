@@ -1,0 +1,65 @@
+Build a full-stack supermarket web application (like Swiggy Instamart/Blinkit) using the following stack:
+
+🔹 Frontend:
+- React + Next.js for customer website.
+- TailwindCSS for Swiggy-style modern UI.
+- Axios for API requests.
+- Mobile responsive design (works on phone & desktop).
+- Deploy on Vercel (free).
+
+🔹 Backend:
+- Django + Django REST Framework (Python).
+- JWT Authentication (djangorestframework-simplejwt).
+- API Endpoints:
+   - User signup/login/logout.
+   - Product categories: Vegetables, Fruits, Dairy, Snacks, Beverages.
+   - Cart (add/remove items, quantity update).
+   - Checkout with total price.
+   - Delivery option (Home Delivery with address OR Store Pickup).
+   - Coupons & Discounts.
+   - Orders (create, update status: pending → processing → delivered).
+   - Feedback & Ratings system.
+- Payment Gateway integration (Razorpay/Stripe in test mode).
+- Use Django Admin Panel for Admin Dashboard (manage products, orders, coupons, and view feedback).
+- Deploy backend on Render (free).
+
+🔹 Database:
+- PostgreSQL (use free Neon.tech or Render PostgreSQL).
+- Models:
+   - User (customer/admin).
+   - Category (Vegetables, Fruits, etc).
+   - Product (name, price, stock, image, category).
+   - Cart (linked to user, products, quantity).
+   - Order (user, items, delivery/pickup, status, payment info).
+   - Coupon (code, discount %, active/inactive).
+   - Feedback (user, rating, comments).
+- Provide migration files and seed demo data (10 products per category).
+
+🔹 Features:
+- Customer:
+   - Signup/Login.
+   - Browse products by category.
+   - Add to cart, checkout, apply coupon, pay with Razorpay/Stripe (test).
+   - Select delivery or pickup.
+   - Give feedback/rating after order.
+   - Track order status.
+- Admin:
+   - Login via Django Admin.
+   - Add/Edit/Delete products.
+   - Manage orders (update status).
+   - Create/Deactivate coupons.
+   - See customer feedback.
+   - View basic sales analytics.
+
+🔹 Extra Requirements:
+- Provide README with setup instructions:
+   - How to connect Django to free PostgreSQL (Neon).
+   - How to run backend (`python manage.py runserver`).
+   - How to run frontend (`npm run dev`).
+   - How to deploy backend on Render and frontend on Vercel.
+- Use clean, modular code (separate apps in Django: users, products, orders, coupons, feedback).
+- Seed database with some sample products (demo veggies, fruits, dairy, snacks, etc).
+- Payment must work in test mode (no real money).
+
+🎯 Goal:
+A working supermarket app with customer side + admin dashboard, using Django + PostgreSQL (free), React frontend, payment, coupons, feedback, delivery/pickup, and fully deployable with free hosting services.
