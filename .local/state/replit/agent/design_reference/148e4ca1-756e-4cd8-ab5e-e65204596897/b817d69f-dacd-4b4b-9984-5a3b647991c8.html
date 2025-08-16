@@ -1,0 +1,951 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshMart - Online Grocery Delivery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            500: '#16a34a',
+                            600: '#15803d',
+                            700: '#166534'
+                        },
+                        secondary: {
+                            500: '#ea580c',
+                            600: '#dc2626'
+                        },
+                        accent: {
+                            500: '#2563eb'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50">
+
+<!-- Navigation Header -->
+<!-- @COMPONENT: Header [authentication, cart, search] -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold text-primary-600">
+                        <i class="fas fa-shopping-basket mr-2"></i>FreshMart
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-lg mx-8">
+                <div class="relative">
+                    <input type="text" 
+                           data-mock="true"
+                           placeholder="Search for vegetables, fruits, dairy..." 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- User Actions -->
+            <div class="flex items-center space-x-4">
+                <!-- Location -->
+                <button class="flex items-center text-gray-700 hover:text-primary-600">
+                    <i class="fas fa-map-marker-alt mr-1"></i>
+                    <span class="hidden sm:block" data-bind="user.location">Delhi</span>
+                </button>
+
+                <!-- Cart -->
+                <button class="relative p-2 text-gray-700 hover:text-primary-600" data-event="click:openCart">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" 
+                          data-bind="cart.itemCount">3</span>
+                </button>
+
+                <!-- User Menu -->
+                <div class="relative">
+                    <button class="flex items-center text-gray-700 hover:text-primary-600" data-event="click:toggleUserMenu">
+                        <i class="fas fa-user-circle text-xl mr-1"></i>
+                        <span class="hidden sm:block" data-bind="user.name">John</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- @END_COMPONENT: Header -->
+
+<!-- Hero Section -->
+<!-- @COMPONENT: HeroSection [promotional banners, quick actions] -->
+<section class="bg-gradient-to-r from-primary-500 to-primary-600 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+                <h2 class="text-4xl font-bold mb-4">Fresh Groceries Delivered in 15 Minutes</h2>
+                <p class="text-xl mb-6 text-primary-50">Order from thousands of products and get doorstep delivery</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                        Shop Now
+                    </button>
+                    <button class="border border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors">
+                        Download App
+                    </button>
+                </div>
+            </div>
+            <div class="hidden lg:block">
+                <!-- Fresh vegetables and fruits in a modern grocery setting -->
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500" 
+                     alt="Fresh grocery delivery" 
+                     class="rounded-xl shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- @END_COMPONENT: HeroSection -->
+
+<!-- Category Navigation -->
+<!-- @COMPONENT: CategoryGrid [product categories, quick navigation] -->
+<section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h3 class="text-2xl font-bold text-gray-900 mb-8">Shop by Category</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+            <!-- @MAP: categories.map(category => ( -->
+            <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer border hover:border-primary-200" 
+                 data-event="click:navigateToCategory" data-category="vegetables">
+                <!-- Fresh vegetables display in a grocery store -->
+                <img src="https://images.unsplash.com/photo-1590779033100-9f60a05a013d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=120" 
+                     alt="Vegetables" class="w-full h-20 object-cover rounded-lg mb-3">
+                <h4 class="font-semibold text-gray-900">Vegetables</h4>
+                <p class="text-sm text-gray-500">Fresh & Organic</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer border hover:border-primary-200" 
+                 data-event="click:navigateToCategory" data-category="fruits">
+                <!-- Colorful fresh fruits arranged beautifully -->
+                <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=120" 
+                     alt="Fruits" class="w-full h-20 object-cover rounded-lg mb-3">
+                <h4 class="font-semibold text-gray-900">Fruits</h4>
+                <p class="text-sm text-gray-500">Seasonal & Fresh</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer border hover:border-primary-200" 
+                 data-event="click:navigateToCategory" data-category="dairy">
+                <!-- Dairy products including milk, cheese, and yogurt -->
+                <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=120" 
+                     alt="Dairy Products" class="w-full h-20 object-cover rounded-lg mb-3">
+                <h4 class="font-semibold text-gray-900">Dairy</h4>
+                <p class="text-sm text-gray-500">Farm Fresh</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer border hover:border-primary-200" 
+                 data-event="click:navigateToCategory" data-category="snacks">
+                <!-- Healthy snacks and packaged foods display -->
+                <img src="https://images.unsplash.com/photo-1599490659213-e2b9527bd087?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=120" 
+                     alt="Snacks" class="w-full h-20 object-cover rounded-lg mb-3">
+                <h4 class="font-semibold text-gray-900">Snacks</h4>
+                <p class="text-sm text-gray-500">Healthy Options</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer border hover:border-primary-200" 
+                 data-event="click:navigateToCategory" data-category="beverages">
+                <!-- Various beverages including juices and drinks -->
+                <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=120" 
+                     alt="Beverages" class="w-full h-20 object-cover rounded-lg mb-3">
+                <h4 class="font-semibold text-gray-900">Beverages</h4>
+                <p class="text-sm text-gray-500">Refreshing Drinks</p>
+            </div>
+            <!-- @END_MAP )) -->
+        </div>
+    </div>
+</section>
+<!-- @END_COMPONENT: CategoryGrid -->
+
+<!-- Featured Products -->
+<!-- @COMPONENT: ProductGrid [product listings, add to cart functionality] -->
+<section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-2xl font-bold text-gray-900">Trending Products</h3>
+            <button class="text-primary-600 hover:text-primary-700 font-semibold">View All</button>
+        </div>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <!-- @MAP: featuredProducts.map(product => ( -->
+            <div class="bg-gray-50 rounded-xl p-4 hover:shadow-lg transition-shadow border hover:border-primary-200">
+                <!-- Fresh organic tomatoes in a basket -->
+                <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" 
+                     alt="Organic Tomatoes" class="w-full h-32 object-cover rounded-lg mb-3">
+                
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-gray-900" data-bind="product.name">Organic Tomatoes</h4>
+                    <p class="text-sm text-gray-500" data-bind="product.weight">1 kg</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-bold text-gray-900" data-bind="product.price">₹60</span>
+                            <span class="text-sm text-gray-500 line-through" data-bind="product.originalPrice">₹80</span>
+                        </div>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">25% OFF</span>
+                    </div>
+                    
+                    <button class="w-full bg-primary-500 text-white py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" 
+                            data-event="click:addToCart" data-product-id="1">
+                        <i class="fas fa-plus mr-1"></i> Add
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4 hover:shadow-lg transition-shadow border hover:border-primary-200">
+                <!-- Fresh green bananas in a bunch -->
+                <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" 
+                     alt="Fresh Bananas" class="w-full h-32 object-cover rounded-lg mb-3">
+                
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-gray-900">Fresh Bananas</h4>
+                    <p class="text-sm text-gray-500">1 dozen</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-bold text-gray-900">₹40</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-primary-500 text-white py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" 
+                            data-event="click:addToCart" data-product-id="2">
+                        <i class="fas fa-plus mr-1"></i> Add
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4 hover:shadow-lg transition-shadow border hover:border-primary-200">
+                <!-- Fresh milk bottle with dairy farm background -->
+                <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" 
+                     alt="Fresh Milk" class="w-full h-32 object-cover rounded-lg mb-3">
+                
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-gray-900">Fresh Milk</h4>
+                    <p class="text-sm text-gray-500">1 liter</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-bold text-gray-900">₹55</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-primary-500 text-white py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" 
+                            data-event="click:addToCart" data-product-id="3">
+                        <i class="fas fa-plus mr-1"></i> Add
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4 hover:shadow-lg transition-shadow border hover:border-primary-200">
+                <!-- Colorful bell peppers display -->
+                <img src="https://pixabay.com/get/gf5e50ba388b9e05454e7e112a2e5c4a09fc137227871c1d794ff435c3cb2e6da27d8af701ca2cad52bdccdf2f54a0a90b0f6d415b0d8543a4f8e33a103bfc3fc_1280.jpg" 
+                     alt="Bell Peppers" class="w-full h-32 object-cover rounded-lg mb-3">
+                
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-gray-900">Bell Peppers</h4>
+                    <p class="text-sm text-gray-500">500g</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-bold text-gray-900">₹120</span>
+                            <span class="text-sm text-gray-500 line-through">₹150</span>
+                        </div>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">20% OFF</span>
+                    </div>
+                    
+                    <button class="w-full bg-primary-500 text-white py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" 
+                            data-event="click:addToCart" data-product-id="4">
+                        <i class="fas fa-plus mr-1"></i> Add
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4 hover:shadow-lg transition-shadow border hover:border-primary-200">
+                <!-- Whole grain bread loaf -->
+                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" 
+                     alt="Whole Grain Bread" class="w-full h-32 object-cover rounded-lg mb-3">
+                
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-gray-900">Whole Grain Bread</h4>
+                    <p class="text-sm text-gray-500">1 loaf</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg font-bold text-gray-900">₹45</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-primary-500 text-white py-2 rounded-lg hover:bg-primary-600 transition-colors font-semibold" 
+                            data-event="click:addToCart" data-product-id="5">
+                        <i class="fas fa-plus mr-1"></i> Add
+                    </button>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+        </div>
+    </div>
+</section>
+<!-- @END_COMPONENT: ProductGrid -->
+
+<!-- Delivery Information -->
+<!-- @COMPONENT: DeliveryInfo [service highlights, delivery options] -->
+<section class="py-12 bg-primary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Why Choose FreshMart?</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <!-- Delivery truck with fresh groceries -->
+                <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                     alt="Fast Delivery Service" class="w-full h-48 object-cover rounded-xl mb-4">
+                <h4 class="text-xl font-semibold text-gray-900 mb-2">15-Minute Delivery</h4>
+                <p class="text-gray-600">Ultra-fast delivery to your doorstep with our hyperlocal network</p>
+            </div>
+            
+            <div class="text-center">
+                <!-- Fresh organic produce selection -->
+                <img src="https://images.unsplash.com/photo-1610348725531-843dff563e2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                     alt="Fresh Quality Products" class="w-full h-48 object-cover rounded-xl mb-4">
+                <h4 class="text-xl font-semibold text-gray-900 mb-2">Fresh Quality</h4>
+                <p class="text-gray-600">Hand-picked fresh products with quality guarantee</p>
+            </div>
+            
+            <div class="text-center">
+                <!-- Customer service representative helping with orders -->
+                <img src="https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
+                     alt="24/7 Customer Support" class="w-full h-48 object-cover rounded-xl mb-4">
+                <h4 class="text-xl font-semibold text-gray-900 mb-2">24/7 Support</h4>
+                <p class="text-gray-600">Round-the-clock customer support for all your needs</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- @END_COMPONENT: DeliveryInfo -->
+
+<!-- Shopping Cart Sidebar -->
+<!-- @COMPONENT: CartSidebar [cart items, quantity controls, checkout] -->
+<div id="cartSidebar" class="fixed inset-y-0 right-0 w-96 bg-white shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out z-50" 
+     data-state="isCartOpen:false">
+    <div class="h-full flex flex-col">
+        <!-- Cart Header -->
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">My Cart</h3>
+                <button class="p-2 hover:bg-gray-100 rounded-lg" data-event="click:closeCart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="text-sm text-gray-500 mt-1" data-bind="cart.itemCount">3 items</p>
+        </div>
+
+        <!-- Cart Items -->
+        <div class="flex-1 overflow-y-auto p-6">
+            <!-- @MAP: cartItems.map(item => ( -->
+            <div class="flex items-center justify-between py-4 border-b">
+                <div class="flex items-center space-x-3">
+                    <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" 
+                         alt="Organic Tomatoes" class="w-12 h-12 object-cover rounded-lg">
+                    <div>
+                        <h4 class="font-medium" data-bind="item.name">Organic Tomatoes</h4>
+                        <p class="text-sm text-gray-500" data-bind="item.price">₹60</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center" 
+                            data-event="click:decreaseQuantity" data-item-id="1">
+                        <i class="fas fa-minus text-xs"></i>
+                    </button>
+                    <span class="w-8 text-center" data-bind="item.quantity">2</span>
+                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center" 
+                            data-event="click:increaseQuantity" data-item-id="1">
+                        <i class="fas fa-plus text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between py-4 border-b">
+                <div class="flex items-center space-x-3">
+                    <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" 
+                         alt="Fresh Bananas" class="w-12 h-12 object-cover rounded-lg">
+                    <div>
+                        <h4 class="font-medium">Fresh Bananas</h4>
+                        <p class="text-sm text-gray-500">₹40</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
+                        <i class="fas fa-minus text-xs"></i>
+                    </button>
+                    <span class="w-8 text-center">1</span>
+                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
+                        <i class="fas fa-plus text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between py-4 border-b">
+                <div class="flex items-center space-x-3">
+                    <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" 
+                         alt="Fresh Milk" class="w-12 h-12 object-cover rounded-lg">
+                    <div>
+                        <h4 class="font-medium">Fresh Milk</h4>
+                        <p class="text-sm text-gray-500">₹55</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
+                        <i class="fas fa-minus text-xs"></i>
+                    </button>
+                    <span class="w-8 text-center">1</span>
+                    <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
+                        <i class="fas fa-plus text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+        </div>
+
+        <!-- Cart Footer -->
+        <div class="p-6 border-t bg-gray-50">
+            <!-- Coupon Code -->
+            <div class="mb-4">
+                <div class="flex space-x-2">
+                    <input type="text" 
+                           placeholder="Enter coupon code" 
+                           class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                           data-mock="true">
+                    <button class="px-4 py-2 bg-accent-500 text-white rounded-lg text-sm font-medium hover:bg-accent-600">
+                        Apply
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="space-y-2 mb-4">
+                <div class="flex justify-between text-sm">
+                    <span>Subtotal</span>
+                    <span data-bind="cart.subtotal">₹215</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>Delivery Fee</span>
+                    <span class="text-green-600">FREE</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>Discount</span>
+                    <span class="text-green-600" data-bind="cart.discount">-₹15</span>
+                </div>
+                <div class="border-t pt-2">
+                    <div class="flex justify-between font-semibold">
+                        <span>Total</span>
+                        <span data-bind="cart.total">₹200</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Button -->
+            <button class="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors" 
+                    data-event="click:proceedToCheckout">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+</div>
+<!-- @END_COMPONENT: CartSidebar -->
+
+<!-- Checkout Modal -->
+<!-- @COMPONENT: CheckoutModal [delivery options, payment, order summary] -->
+<div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" 
+     data-state="isCheckoutOpen:false">
+    <div class="bg-white rounded-xl max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+        <!-- Modal Header -->
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold">Checkout</h3>
+                <button class="p-2 hover:bg-gray-100 rounded-lg" data-event="click:closeCheckout">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Checkout Form -->
+        <div class="p-6 space-y-6">
+            <!-- Delivery Options -->
+            <div>
+                <h4 class="font-semibold mb-4">Delivery Option</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="border rounded-lg p-4 cursor-pointer hover:border-primary-500">
+                        <input type="radio" name="delivery" value="home" class="sr-only" checked data-mock="true">
+                        <div class="text-center">
+                            <i class="fas fa-home text-2xl text-primary-500 mb-2"></i>
+                            <div class="font-medium">Home Delivery</div>
+                            <div class="text-sm text-gray-500">15-30 mins • FREE</div>
+                        </div>
+                    </label>
+                    <label class="border rounded-lg p-4 cursor-pointer hover:border-primary-500">
+                        <input type="radio" name="delivery" value="pickup" class="sr-only" data-mock="true">
+                        <div class="text-center">
+                            <i class="fas fa-store text-2xl text-gray-400 mb-2"></i>
+                            <div class="font-medium">Store Pickup</div>
+                            <div class="text-sm text-gray-500">Ready in 10 mins</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Delivery Address -->
+            <div>
+                <h4 class="font-semibold mb-4">Delivery Address</h4>
+                <div class="space-y-3">
+                    <input type="text" 
+                           placeholder="Street Address" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                           data-mock="true">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" 
+                               placeholder="City" 
+                               class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                               data-mock="true">
+                        <input type="text" 
+                               placeholder="PIN Code" 
+                               class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                               data-mock="true">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div>
+                <h4 class="font-semibold mb-4">Payment Method</h4>
+                <div class="space-y-3">
+                    <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:border-primary-500">
+                        <input type="radio" name="payment" value="card" class="text-primary-500" checked data-mock="true">
+                        <i class="fas fa-credit-card text-gray-600"></i>
+                        <span>Credit/Debit Card</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:border-primary-500">
+                        <input type="radio" name="payment" value="upi" class="text-primary-500" data-mock="true">
+                        <i class="fas fa-mobile-alt text-gray-600"></i>
+                        <span>UPI Payment</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:border-primary-500">
+                        <input type="radio" name="payment" value="cod" class="text-primary-500" data-mock="true">
+                        <i class="fas fa-money-bill-wave text-gray-600"></i>
+                        <span>Cash on Delivery</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h4 class="font-semibold mb-3">Order Summary</h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span>Subtotal (3 items)</span>
+                        <span>₹215</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Delivery Charges</span>
+                        <span class="text-green-600">FREE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Discount</span>
+                        <span class="text-green-600">-₹15</span>
+                    </div>
+                    <div class="border-t pt-2">
+                        <div class="flex justify-between font-semibold text-base">
+                            <span>Total Amount</span>
+                            <span>₹200</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Place Order Button -->
+            <button class="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors" 
+                    data-event="click:placeOrder" data-implementation="Should validate form and process payment">
+                Place Order
+            </button>
+        </div>
+    </div>
+</div>
+<!-- @END_COMPONENT: CheckoutModal -->
+
+<!-- Authentication Modal -->
+<!-- @COMPONENT: AuthModal [login, signup forms] -->
+<div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" 
+     data-state="isAuthOpen:false">
+    <div class="bg-white rounded-xl max-w-md w-full mx-4">
+        <!-- Modal Header -->
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold">Sign In to FreshMart</h3>
+                <button class="p-2 hover:bg-gray-100 rounded-lg" data-event="click:closeAuth">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Auth Form -->
+        <div class="p-6">
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <input type="tel" 
+                           placeholder="Enter your phone number" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                           data-mock="true">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" 
+                           placeholder="Enter your password" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                           data-mock="true">
+                </div>
+                <button type="submit" 
+                        class="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
+                        data-event="click:signIn" data-implementation="Should authenticate user via JWT">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="mt-4 text-center">
+                <p class="text-sm text-gray-600">
+                    Don't have an account? 
+                    <button class="text-primary-600 hover:text-primary-700 font-semibold" data-event="click:switchToSignUp">
+                        Sign Up
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- @END_COMPONENT: AuthModal -->
+
+<!-- Admin Dashboard Preview -->
+<!-- @COMPONENT: AdminDashboard [product management, order tracking, analytics] -->
+<div id="adminDashboard" class="hidden min-h-screen bg-gray-100">
+    <!-- Admin Sidebar -->
+    <div class="flex">
+        <div class="w-64 bg-white shadow-sm h-screen">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-primary-600">
+                    <i class="fas fa-user-shield mr-2"></i>Admin Panel
+                </h2>
+            </div>
+            <nav class="mt-6">
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+                    <i class="fas fa-box mr-3"></i>Products
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+                    <i class="fas fa-shopping-bag mr-3"></i>Orders
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+                    <i class="fas fa-ticket-alt mr-3"></i>Coupons
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+                    <i class="fas fa-star mr-3"></i>Feedback
+                </a>
+            </nav>
+        </div>
+
+        <!-- Admin Main Content -->
+        <div class="flex-1 p-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-8">Dashboard Overview</h1>
+            
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Total Orders</p>
+                            <p class="text-2xl font-bold text-gray-900" data-bind="admin.totalOrders">1,234</p>
+                        </div>
+                        <div class="p-3 bg-primary-100 rounded-lg">
+                            <i class="fas fa-shopping-bag text-primary-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Revenue Today</p>
+                            <p class="text-2xl font-bold text-gray-900" data-bind="admin.todayRevenue">₹45,678</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <i class="fas fa-rupee-sign text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Active Products</p>
+                            <p class="text-2xl font-bold text-gray-900" data-bind="admin.activeProducts">156</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <i class="fas fa-box text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Active Users</p>
+                            <p class="text-2xl font-bold text-gray-900" data-bind="admin.activeUsers">2,345</p>
+                        </div>
+                        <div class="p-3 bg-orange-100 rounded-lg">
+                            <i class="fas fa-users text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="bg-white rounded-xl shadow-sm">
+                <div class="p-6 border-b">
+                    <h3 class="text-lg font-semibold">Recent Orders</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <!-- @MAP: recentOrders.map(order => ( -->
+                            <tr data-mock="true">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-bind="order.id">#FM001</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-bind="order.customer">John Doe</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" data-bind="order.amount">₹234</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800" data-bind="order.status">Processing</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button class="text-primary-600 hover:text-primary-900 mr-3" data-event="click:viewOrder">View</button>
+                                    <button class="text-green-600 hover:text-green-900" data-event="click:updateStatus">Update</button>
+                                </td>
+                            </tr>
+                            <!-- @END_MAP )) -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- @END_COMPONENT: AdminDashboard -->
+
+<!-- Footer -->
+<!-- @COMPONENT: Footer [links, contact info, app downloads] -->
+<footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4">
+                    <i class="fas fa-shopping-basket mr-2"></i>FreshMart
+                </h3>
+                <p class="text-gray-400 mb-4">Fresh groceries delivered to your doorstep in 15 minutes</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-4">Categories</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white">Vegetables</a></li>
+                    <li><a href="#" class="hover:text-white">Fruits</a></li>
+                    <li><a href="#" class="hover:text-white">Dairy</a></li>
+                    <li><a href="#" class="hover:text-white">Snacks</a></li>
+                    <li><a href="#" class="hover:text-white">Beverages</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white">About Us</a></li>
+                    <li><a href="#" class="hover:text-white">Contact</a></li>
+                    <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-white">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-4">Download App</h4>
+                <div class="space-y-3">
+                    <a href="#" class="block">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
+                             alt="Get it on Google Play" class="h-10">
+                    </a>
+                    <a href="#" class="block">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
+                             alt="Download on the App Store" class="h-10">
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 FreshMart. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+<!-- @END_COMPONENT: Footer -->
+
+<script>
+    // TODO: Implement business logic, API calls, and state management
+    (function() {
+        // Cart functionality
+        let cartState = {
+            isOpen: false,
+            items: [],
+            total: 0
+        };
+
+        // Modal states
+        let modals = {
+            checkout: false,
+            auth: false
+        };
+
+        // Cart sidebar toggle
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            cartState.isOpen = !cartState.isOpen;
+            if (cartState.isOpen) {
+                sidebar.classList.remove('translate-x-full');
+            } else {
+                sidebar.classList.add('translate-x-full');
+            }
+        }
+
+        // Modal toggle functions
+        function toggleModal(modalId, state) {
+            const modal = document.getElementById(modalId);
+            if (state) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Event listeners for demo interactions
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('[data-event]');
+            if (!target) return;
+
+            const event = target.getAttribute('data-event');
+            
+            switch(event) {
+                case 'click:openCart':
+                    toggleCart();
+                    break;
+                case 'click:closeCart':
+                    toggleCart();
+                    break;
+                case 'click:proceedToCheckout':
+                    toggleCart();
+                    toggleModal('checkoutModal', true);
+                    break;
+                case 'click:closeCheckout':
+                    toggleModal('checkoutModal', false);
+                    break;
+                case 'click:placeOrder':
+                    alert('Order placed successfully! (Demo)');
+                    toggleModal('checkoutModal', false);
+                    break;
+                case 'click:addToCart':
+                    // Animate add to cart
+                    target.innerHTML = '<i class="fas fa-check mr-1"></i> Added';
+                    target.classList.add('bg-green-500');
+                    setTimeout(() => {
+                        target.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
+                        target.classList.remove('bg-green-500');
+                    }, 1500);
+                    break;
+                case 'click:closeAuth':
+                    toggleModal('authModal', false);
+                    break;
+                case 'click:switchToSignUp':
+                    // Switch form content (demo)
+                    break;
+            }
+        });
+
+        // Close modals on backdrop click
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('bg-black')) {
+                const modals = ['checkoutModal', 'authModal'];
+                modals.forEach(modal => toggleModal(modal, false));
+            }
+        });
+
+        // Responsive cart behavior
+        function handleResize() {
+            const sidebar = document.getElementById('cartSidebar');
+            if (window.innerWidth < 768 && cartState.isOpen) {
+                sidebar.style.width = '100vw';
+            } else {
+                sidebar.style.width = '24rem';
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Initial call
+    })();
+</script>
+
+</body>
+</html>
