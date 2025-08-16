@@ -18,7 +18,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
+  apiVersion: "2020-08-27",
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -332,13 +332,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Coupon has expired" });
       }
       
-      if (coupon.usageLimit && coupon.usageCount >= coupon.usageLimit) {
+      if (coupon.usageLimit && (coupon.usageCount || 0) >= coupon.usageLimit) {
         return res.status(400).json({ message: "Coupon usage limit exceeded" });
       }
       
-      if (orderAmount < parseFloat(coupon.minOrderAmount)) {
+      if (orderAmount < parseFloat(coupon.minOrderAmount || "0")) {
         return res.status(400).json({ 
-          message: `Minimum order amount of ₹${coupon.minOrderAmount} required` 
+          message: `Minimum order amount of ₹${coupon.minOrderAmount || "0"} required` 
         });
       }
       

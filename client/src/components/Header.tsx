@@ -39,7 +39,7 @@ export default function Header() {
     retry: false,
   });
 
-  const cartItemsCount = cartItems ? cartItems.length : 0;
+  const cartItemsCount = (cartItems as any[])?.length || 0;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ export default function Header() {
     window.location.href = "/api/logout";
   };
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = (user as any)?.role === 'admin';
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -117,7 +117,7 @@ export default function Header() {
                 >
                   <User className="h-5 w-5 mr-1" />
                   <span className="hidden sm:block">
-                    {user?.firstName || user?.email?.split('@')[0] || 'Account'}
+                    {(user as any)?.firstName || (user as any)?.email?.split('@')[0] || 'Account'}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
@@ -226,9 +226,9 @@ export default function Header() {
                       </div>
                       <div>
                         <p className="font-medium">
-                          {user?.firstName || user?.email?.split('@')[0] || 'User'}
+                          {(user as any)?.firstName || (user as any)?.email?.split('@')[0] || 'User'}
                         </p>
-                        <p className="text-sm text-gray-500">{user?.email}</p>
+                        <p className="text-sm text-gray-500">{(user as any)?.email}</p>
                       </div>
                     </div>
                   </div>

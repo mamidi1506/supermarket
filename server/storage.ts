@@ -219,7 +219,7 @@ export class DatabaseStorage implements IStorage {
       const [updatedItem] = await db
         .update(cartItems)
         .set({ 
-          quantity: existingItem.quantity + (cartItem.quantity || 1),
+          quantity: (existingItem.quantity || 0) + (cartItem.quantity || 1),
           updatedAt: new Date()
         })
         .where(eq(cartItems.id, existingItem.id))
@@ -308,8 +308,8 @@ export class DatabaseStorage implements IStorage {
     return newOrder;
   }
 
-  async createOrderItems(orderItems: InsertOrderItem[]): Promise<OrderItem[]> {
-    const newOrderItems = await db.insert(orderItems).values(orderItems).returning();
+  async createOrderItems(items: InsertOrderItem[]): Promise<OrderItem[]> {
+    const newOrderItems = await db.insert(orderItems).values(items).returning();
     return newOrderItems;
   }
 
