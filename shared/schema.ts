@@ -233,6 +233,10 @@ export const insertOrderSchema = createInsertSchema(orders).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  totalAmount: z.union([z.string(), z.number()]).transform(val => String(val)),
+  discountAmount: z.union([z.string(), z.number()]).transform(val => String(val)).optional(),
+  deliveryFee: z.union([z.string(), z.number()]).transform(val => String(val)).optional(),
 });
 
 export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
